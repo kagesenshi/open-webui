@@ -274,6 +274,8 @@ DATABASE_URL = os.environ.get("DATABASE_URL", f"sqlite:///{DATA_DIR}/webui.db")
 if "postgres://" in DATABASE_URL:
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://")
 
+DATABASE_SCHEMA = os.environ.get("DATABASE_SCHEMA", None)
+
 DATABASE_POOL_SIZE = os.environ.get("DATABASE_POOL_SIZE", 0)
 
 if DATABASE_POOL_SIZE == "":
@@ -354,15 +356,16 @@ WEBUI_SECRET_KEY = os.environ.get(
     ),  # DEPRECATED: remove at next major version
 )
 
-WEBUI_SESSION_COOKIE_SAME_SITE = os.environ.get(
-    "WEBUI_SESSION_COOKIE_SAME_SITE",
-    os.environ.get("WEBUI_SESSION_COOKIE_SAME_SITE", "lax"),
-)
+WEBUI_SESSION_COOKIE_SAME_SITE = os.environ.get("WEBUI_SESSION_COOKIE_SAME_SITE", "lax")
 
-WEBUI_SESSION_COOKIE_SECURE = os.environ.get(
-    "WEBUI_SESSION_COOKIE_SECURE",
-    os.environ.get("WEBUI_SESSION_COOKIE_SECURE", "false").lower() == "true",
-)
+WEBUI_SESSION_COOKIE_SECURE = os.environ.get("WEBUI_SESSION_COOKIE_SECURE", "false").lower() == "true"
+
+WEBUI_AUTH_COOKIE_SAME_SITE = os.environ.get("WEBUI_AUTH_COOKIE_SAME_SITE", WEBUI_SESSION_COOKIE_SAME_SITE)
+
+WEBUI_AUTH_COOKIE_SECURE = os.environ.get(
+    "WEBUI_AUTH_COOKIE_SECURE", 
+    os.environ.get("WEBUI_SESSION_COOKIE_SECURE", "false")
+).lower() == "true"
 
 if WEBUI_AUTH and WEBUI_SECRET_KEY == "":
     raise ValueError(ERROR_MESSAGES.ENV_VAR_NOT_FOUND)
